@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Commuter Buddy: routes, fare estimates and places to visit in Daet, Camarines Norte.">
+    <meta name="theme-color" content="#1565C0">
+    <title>Commuter Buddy · Daet Commuter &amp; Tourism Guide</title>
+
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="welcome-page">
+    <a class="skip-link" href="#type-title">Skip to user type selection</a>
+
+    <main class="welcome" id="main">
+
+        <!-- Introduction -->
+        <section class="welcome__intro" aria-labelledby="welcome-title">
+            <div class="welcome__brand">
+                <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+                    <rect width="48" height="48" rx="12" fill="#FFFFFF"/>
+                    <path d="M24 38s-10-8.6-10-16a10 10 0 0 1 20 0c0 7.4-10 16-10 16z" fill="#1565C0"/>
+                    <circle cx="24" cy="22" r="4.2" fill="#FF8F00"/>
+                </svg>
+                <span>Commuter Buddy</span>
+            </div>
+
+            <p class="welcome__eyebrow">Travel &amp; Tourism Guide &middot; Daet, Camarines Norte</p>
+            <h1 id="welcome-title">Commute around Daet with confidence.</h1>
+            <p class="welcome__lead">
+                Find your route on the map, know the fare before you ride, and discover places
+                to visit, all in one web app you can use on any device.
+            </p>
+
+            <ul class="welcome__features">
+                <li>
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14"/><path d="M15 6v14"/></svg>
+                    Routes on a live map
+                </li>
+                <li>
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 17V7h3.25a3 3 0 0 1 0 6H9.5"/><path d="M8 9.5h8"/><path d="M8 11.5h8"/></svg>
+                    Fare estimates by distance
+                </li>
+                <li>
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                    Tourist spots, food &amp; shops
+                </li>
+                <li>
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg>
+                    Anonymous trip feedback
+                </li>
+            </ul>
+        </section>
+
+        <!-- User type selection (first screen of the Android app) -->
+        <section class="welcome__panel" aria-labelledby="type-title">
+            <div class="card welcome__card">
+                <h2 id="type-title">Who&rsquo;s commuting today?</h2>
+                <p class="muted welcome__card-sub">
+                    Your choice sets your fare and is used to tag your feedback. No name or account needed.
+                </p>
+
+                <form id="type-form" novalidate>
+                    <fieldset class="type-list" id="type-list">
+                        <legend class="sr-only">Choose your user type</legend>
+                        <!-- Options are generated from js/data.js -->
+                    </fieldset>
+                    <p class="field-error" id="type-error" role="alert"></p>
+                    <button type="submit" class="btn btn--primary btn--block" id="btn-continue" disabled>Continue</button>
+                </form>
+
+                <p class="privacy-note">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                    Saved only on this device. You can change it anytime.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/data.js" defer></script>
+    <script src="js/fare.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/pwa.js" defer></script>
+    <script src="js/pages/welcome.js" defer></script>
+</body>
+</html>

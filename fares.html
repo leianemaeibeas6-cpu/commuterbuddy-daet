@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Estimate tricycle and jeepney fares in Daet by distance, with student, PWD and senior discounts.">
+    <meta name="theme-color" content="#1565C0">
+    <title>Fares · Commuter Buddy</title>
+
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="has-bottom-nav">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="app-header" id="app-header"></header>
+
+    <main id="main">
+        <section class="page-hero">
+            <div class="container">
+                <span class="page-hero__eyebrow">Fares</span>
+                <h1>Know the fare before you ride</h1>
+                <p>Estimated tricycle and jeepney fares based on distance, with discounts for students, PWDs and senior citizens.</p>
+            </div>
+        </section>
+
+        <div class="container page-body">
+            <div class="fares-layout">
+
+                <!-- Fare calculator -->
+                <section class="card" id="calculator" aria-labelledby="calc-title">
+                    <div class="card__header">
+                        <div>
+                            <h2 class="card__title" id="calc-title">Fare calculator</h2>
+                            <p class="card__subtitle">Updates as you choose.</p>
+                        </div>
+                    </div>
+
+                    <form id="fare-form" novalidate>
+                        <div class="field">
+                            <label for="start">From</label>
+                            <input type="text" class="input" id="start" name="start" placeholder="Type a place (e.g. Daet Market)" maxlength="120">
+                        </div>
+                        <div class="swap-row">
+                            <button type="button" class="swap-btn" id="btn-swap" aria-label="Swap start and destination" title="Swap">
+                                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16"/><path d="m3 8 4-4 4 4"/><path d="M17 20V4"/><path d="m21 16-4 4-4-4"/></svg>
+                            </button>
+                        </div>
+                        <div class="field">
+                            <label for="dest">To</label>
+                            <input type="text" class="input" id="dest" name="dest" placeholder="Type a place or town (e.g. Bagasbas, Talisay)" maxlength="120" aria-describedby="dest-error">
+                            <p class="field-error" id="dest-error"></p>
+                        </div>
+                        <div class="field">
+                            <span class="field-label" id="transport-label">Transport</span>
+                            <div class="segmented" role="radiogroup" aria-labelledby="transport-label">
+                                <input type="radio" name="transport" id="t-tricycle" value="Tricycle" checked>
+                                <label for="t-tricycle">Tricycle</label>
+                                <input type="radio" name="transport" id="t-jeepney" value="Jeepney">
+                                <label for="t-jeepney">Jeepney</label>
+                            </div>
+                        </div>
+                        <p class="transport-note" id="transport-note" aria-live="polite" hidden></p>
+                        <div class="field">
+                            <span class="field-label" id="time-label">Time of ride</span>
+                            <div class="segmented" role="radiogroup" aria-labelledby="time-label">
+                                <input type="radio" name="daynight" id="d-day" value="day" checked>
+                                <label for="d-day">Day</label>
+                                <input type="radio" name="daynight" id="d-night" value="night">
+                                <label for="d-night">Night</label>
+                            </div>
+                        </div>
+<label class="switch" for="special">
+                            <span class="switch__text">Special trip (whole tricycle, not shared)</span>
+                            <input type="checkbox" id="special" name="special" role="switch">
+                            <span class="switch__track" aria-hidden="true"></span>
+                        </label>
+                        <label class="switch" for="discount">
+                            <span class="switch__text">Student / PWD / Senior discounted fare</span>
+                            <input type="checkbox" id="discount" role="switch">
+                            <span class="switch__track" aria-hidden="true"></span>
+                        </label>
+                    </form>
+
+                    <div class="fare-result" aria-live="polite">
+                        <p class="fare-result__label" id="fare-label">Estimated fare (solo ride)</p>
+                        <p class="fare-result__value" id="fare-value">&mdash;</p>
+                        <p class="fare-result__meta" id="fare-meta"></p>
+                        <p class="fare-group" id="fare-group"></p>
+                        <div class="fare-compare" id="fare-compare">
+                            <div class="fare-compare__item" id="compare-regular">
+                                <span>Regular</span>
+                                <strong></strong>
+                            </div>
+                            <div class="fare-compare__item" id="compare-discount">
+                                <span>Student/PWD/Senior</span>
+                                <strong></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-row">
+                        <a class="btn btn--ghost" id="link-map" href="routes.html">View on map</a>
+                        <a class="btn btn--accent" id="link-rate" href="feedback.html">Rate this trip</a>
+                    </div>
+                    <p class="alert alert--accent mt-16">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+                        <span>Fares are estimates based on distance and may differ from what the driver charges.</span>
+                    </p>
+                </section>
+
+                <!-- Common routes table -->
+                <section class="card" aria-labelledby="table-title">
+                    <div class="card__header">
+                        <div>
+                            <h2 class="card__title" id="table-title">Common routes</h2>
+                            <p class="card__subtitle">Tap a route to compute it.</p>
+                        </div>
+                        <span class="badge badge--plain" id="table-mode"></span>
+                    </div>
+                    <table class="fare-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Route</th>
+                                <th scope="col">Distance</th>
+                                <th scope="col">Fare</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fare-table-body"></tbody>
+                    </table>
+                </section>
+
+                <!-- How fares are computed -->
+                <section class="card fares-guide" aria-labelledby="guide-title">
+                    <h2 class="card__title" id="guide-title">How fares are estimated</h2>
+                    <div class="guide-grid" id="fare-rules">
+                        <!-- Generated from the fare rules in js/fare.js -->
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">Commuter Buddy &middot; Fares are estimates only. Always confirm with the driver.</div>
+    </footer>
+
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation (mobile)"></nav>
+
+    <script src="js/data.js" defer></script>
+    <script src="js/fare.js" defer></script>
+    <script src="js/roads.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/pwa.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/map.js" defer></script>
+    <script src="js/geo.js" defer></script>
+    <script src="js/search.js" defer></script>
+    <script src="js/pages/fares.js" defer></script>
+</body>
+</html>

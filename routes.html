@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="See your route around Daet on the map with distance, travel time and estimated fare.">
+    <meta name="theme-color" content="#1565C0">
+    <title>Routes · Commuter Buddy</title>
+
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap">
+    <!-- Leaflet map library (open source, no API key needed) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="has-bottom-nav">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="app-header" id="app-header"></header>
+
+    <main id="main">
+        <section class="page-hero">
+            <div class="container">
+                <span class="page-hero__eyebrow">Routes</span>
+                <h1>Where are you going?</h1>
+                <p>Type your start and destination (or tap the map). The route, distance and estimated fare appear automatically.</p>
+            </div>
+        </section>
+
+        <div class="container page-body">
+            <div class="routes-layout">
+
+                <div class="routes-panel">
+                    <!-- Trip form -->
+                    <section class="card" aria-labelledby="trip-form-title">
+                        <h2 class="sr-only" id="trip-form-title">Plan a trip</h2>
+                        <form id="route-form" novalidate>
+                            <div class="field">
+                                <div class="field-label-row">
+                                    <label for="start">From</label>
+                                    <button type="button" class="link-btn" id="btn-locate">
+                                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>
+                                        <span>Use my location</span>
+                                    </button>
+                                </div>
+                                <input type="text" class="input" id="start" name="start" placeholder="Type a place (e.g. Daet Market)" maxlength="120" aria-describedby="start-error">
+                                <p class="field-error" id="start-error"></p>
+                            </div>
+
+                            <div class="swap-row">
+                                <button type="button" class="swap-btn" id="btn-swap" aria-label="Swap start and destination" title="Swap">
+                                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16"/><path d="m3 8 4-4 4 4"/><path d="M17 20V4"/><path d="m21 16-4 4-4-4"/></svg>
+                                </button>
+                            </div>
+
+                            <div class="field">
+                                <label for="dest">To</label>
+                                <input type="text" class="input" id="dest" name="dest" placeholder="Type a place or town (e.g. Bagasbas, Talisay)" maxlength="120" aria-describedby="dest-error">
+                                <p class="field-error" id="dest-error"></p>
+                            </div>
+
+                            <div class="field">
+                                <span class="field-label" id="transport-label">Transport</span>
+                                <div class="segmented" role="radiogroup" aria-labelledby="transport-label">
+                                    <input type="radio" name="transport" id="t-tricycle" value="Tricycle" checked>
+                                    <label for="t-tricycle">Tricycle</label>
+                                    <input type="radio" name="transport" id="t-jeepney" value="Jeepney">
+                                    <label for="t-jeepney">Jeepney</label>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <span class="field-label" id="time-label">Time of ride</span>
+                                <div class="segmented" role="radiogroup" aria-labelledby="time-label">
+                                    <input type="radio" name="daynight" id="d-day" value="day" checked>
+                                    <label for="d-day">Day</label>
+                                    <input type="radio" name="daynight" id="d-night" value="night">
+                                    <label for="d-night">Night</label>
+                                </div>
+                            </div>
+                            <label class="switch" for="special">
+                                <span class="switch__text">Special trip (whole tricycle, not shared)</span>
+                                <input type="checkbox" id="special" name="special" role="switch">
+                                <span class="switch__track" aria-hidden="true"></span>
+                            </label>
+                            <p class="transport-note" id="transport-note" aria-live="polite" hidden></p>
+
+                            <div class="btn-row">
+                                <button type="submit" class="btn btn--primary">Show route</button>
+                                <button type="button" class="btn btn--outline" id="btn-frequent">Frequent routes</button>
+                            </div>
+                            <p class="geo-status" id="geo-status" aria-live="polite" hidden></p>
+                        </form>
+                    </section>
+
+                    <!-- Trip result (info card in the Android Routes screen) -->
+                    <section class="card trip-card" id="trip-card" aria-live="polite" hidden>
+                        <span class="badge">Your trip</span>
+                        <h2 class="trip-card__title" id="trip-title"></h2>
+                        <dl class="trip-stats">
+                            <div>
+                                <dt>Distance</dt>
+                                <dd id="trip-distance"></dd>
+                            </div>
+                            <div>
+                                <dt>Travel time</dt>
+                                <dd id="trip-time"></dd>
+                            </div>
+                            <div class="trip-stats__fare">
+                                <dt>Est. fare (solo)</dt>
+                                <dd id="trip-fare"></dd>
+                            </div>
+                        </dl>
+                        <p class="trip-group" id="trip-group"></p>
+                        <p class="trip-card__line" id="trip-landmark"></p>
+                        <p class="trip-card__note" id="trip-note"></p>
+
+                        <!-- Roads the trip passes (dadaanan), filled in when the road route loads -->
+                        <details class="directions" id="trip-directions" open hidden>
+                            <summary>
+                                <span class="directions__title">Roads you&rsquo;ll pass</span>
+                                <span class="directions__count" id="directions-count"></span>
+                            </summary>
+                            <p class="directions__via" id="directions-via"></p>
+                            <ol class="directions__list" id="directions-list"></ol>
+                        </details>
+                        <div class="btn-row">
+                            <a class="btn btn--ghost" id="link-fare" href="fares.html">View fare</a>
+                            <a class="btn btn--accent" id="link-rate" href="feedback.html">Rate this trip</a>
+                        </div>
+                    </section>
+
+                    <!-- Recent searches -->
+                    <section class="card" id="recent-card" aria-labelledby="recent-title" hidden>
+                        <div class="card__header">
+                            <h2 class="card__title" id="recent-title">Recent searches</h2>
+                            <button type="button" class="link-btn" id="btn-clear-recent">Clear</button>
+                        </div>
+                        <ul class="route-list" id="recent-list"></ul>
+                    </section>
+                </div>
+
+                <!-- Map -->
+                <section class="card map-card" aria-label="Map of Daet">
+                    <div class="map" id="map"></div>
+                    <ul class="map-legend">
+                        <li><span class="legend-dot legend-dot--start"></span>Start</li>
+                        <li><span class="legend-dot legend-dot--dest"></span>Destination</li>
+                        <li><span class="legend-dot legend-dot--place"></span>Place</li>
+                        <li><span class="legend-dot legend-dot--user"></span>You</li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Frequent routes dialog -->
+    <dialog class="dialog" id="frequent-dialog" aria-labelledby="frequent-title">
+        <div class="dialog__header">
+            <h2 class="card__title" id="frequent-title">Frequently used routes</h2>
+            <button type="button" class="dialog__close" id="frequent-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="dialog__body">
+            <div class="search-box search-box--compact">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="search" class="input" id="frequent-search" placeholder="Search routes (e.g. Bagasbas)" aria-label="Search routes" autocomplete="off">
+            </div>
+            <ul class="route-list route-list--dialog" id="frequent-list"></ul>
+            <p class="empty-inline" id="frequent-empty" hidden>No routes match your search.</p>
+        </div>
+    </dialog>
+
+    <footer class="site-footer">
+        <div class="container">Commuter Buddy &middot; Route lines follow real roads when online. Distances and fares are estimates.</div>
+    </footer>
+
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation (mobile)"></nav>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" defer></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/fare.js" defer></script>
+    <script src="js/roads.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/pwa.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/map.js" defer></script>
+    <script src="js/geo.js" defer></script>
+    <script src="js/search.js" defer></script>
+    <script src="js/pages/routes.js" defer></script>
+</body>
+</html>

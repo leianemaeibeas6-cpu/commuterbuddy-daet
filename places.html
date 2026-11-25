@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Tourist spots, landmarks, food and local businesses in Daet, Camarines Norte.">
+    <meta name="theme-color" content="#1565C0">
+    <title>Places · Commuter Buddy</title>
+
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="has-bottom-nav">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="app-header" id="app-header"></header>
+
+    <main id="main">
+        <section class="page-hero">
+            <div class="container">
+                <span class="page-hero__eyebrow">Places</span>
+                <h1>Places to Visit</h1>
+                <p>Tourist spots, landmarks, food and local businesses in Daet, with the route and fare one tap away.</p>
+            </div>
+        </section>
+
+        <div class="container page-body">
+
+            <!-- Search and filters -->
+            <section class="card places-toolbar" aria-label="Search and filter places">
+                <div class="search-row">
+                    <div class="search-box">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                        <input type="search" class="input" id="search" placeholder="Search any place in Daet&hellip;" aria-label="Search places by name or address" autocomplete="off" maxlength="60">
+                    </div>
+                </div>
+                <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+            </section>
+
+            <p class="results-count" id="results-count" aria-live="polite"></p>
+
+            <div class="places-grid" id="places-list"></div>
+
+            <section id="more-places" hidden aria-live="polite">
+                <h2 class="more-places__title">More places nearby <small>(from OpenStreetMap)</small></h2>
+                <p class="results-count" id="more-status"></p>
+                <div class="places-grid" id="more-list"></div>
+            </section>
+
+            <div class="card empty-state" id="places-empty" hidden>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <strong>No places found.</strong>
+                <p>Try another word or category.</p>
+                <button type="button" class="btn btn--outline btn--sm mt-16" id="btn-clear">Clear search</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">Commuter Buddy &middot; Travel &amp; Tourism Guide for Daet, Camarines Norte</div>
+    </footer>
+
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation (mobile)"></nav>
+
+    <script src="js/data.js" defer></script>
+    <script src="js/fare.js" defer></script>
+    <script src="js/roads.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/pwa.js" defer></script>
+    <script src="js/search.js" defer></script>
+    <script src="js/pages/places.js" defer></script>
+</body>
+</html>
